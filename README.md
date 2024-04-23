@@ -5,3 +5,5 @@ Chat App für das Modul 322
 Gruppenchats
 
 Privatnachrichten
+
+REST-Api
