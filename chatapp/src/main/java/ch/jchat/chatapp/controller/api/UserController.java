@@ -1,4 +1,4 @@
-package ch.jchat.chatapp.controller;
+package ch.jchat.chatapp.controller.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,11 +21,16 @@ public class UserController {
      * UserID s
      * Username c
      * Password c
+     * Salt s
      * Email c 
      * Role c
      * Avatar (default GREEN) c
      * Banned c
-     * LastLogin c
      * CreationDate s
+     * 
+     * create s
+     * modify c 
+     * delete s
+     * 
      */
 }

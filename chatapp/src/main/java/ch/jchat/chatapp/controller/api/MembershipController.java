@@ -1,4 +1,4 @@
-package ch.jchat.chatapp.controller;
+package ch.jchat.chatapp.controller.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -8,19 +8,29 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/chat")
-public class ChatController {
+@RequestMapping("/api/member")
+public class MembershipController {
 
     @GetMapping("/hello")
     public ResponseEntity<String> getPublicResp(){
         return ResponseEntity.ok("Hello");
     }
+
     /*
-     * (c change (multi) / s set (single))
+     * (c change (multi) / s set (single) / d delete)
+     * MembershipID s
      * ChatID s
-     * OwnerID c
-     * CreationDate s
-     * Userlimit c
-     * LastMessage c
+     * UserID s
+     * UserRole c
+     * JoinDate s
+     * ChatTimeout c
+     * Banned c
+     * BanDate c
+     * BanReason c
+     * 
+     * create s
+     * modify c
+     * delete s
      */
+    
 }
