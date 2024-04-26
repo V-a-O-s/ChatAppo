@@ -51,5 +51,4 @@ public class Invite {
     @NotNull
     @Column(name = "active", nullable = false)
     private boolean active;
-
 }

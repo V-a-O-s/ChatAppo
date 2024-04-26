@@ -1,14 +1,29 @@
 package ch.jchat.chatapp.repositories;
 
 import java.util.Optional;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import ch.jchat.chatapp.models.User;
+import ch.jchat.chatapp.enums.EPlatformRoles;
+import ch.jchat.chatapp.enums.EAvatar;
 
-public interface UserRepository extends JpaRepository<User, Long>{
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUserID(Long userID);
     Optional<User> findByUsername(String username);
-    Optional<User> findByUserID(int UserID);
-    Boolean existsByUsername(String username);
-    Boolean existsByEmail(String email);
+    Optional<User> findByEmail(String email);
+    Optional<User> findByBackUpEmail(String email);
+    Optional<User> findByPhone(String phone);
+
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+    boolean existsByPhone(String phone);
+
+    List<User> findByRole(EPlatformRoles role);
+    List<User> findByBanned(boolean banned);
+    List<User> findByAvatar(EAvatar avatar);
 }

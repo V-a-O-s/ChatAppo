@@ -1,9 +1,9 @@
 package ch.jchat.chatapp.enums;
 
 public enum EPlatformRoles {
-    ADMIN,
-    SUPORTER, //platform moderator
-    MVP, //$40
-    VIP, //$6.90
-    USER,
+    ADMIN,      // Admin role
+    SUPPORTER,  // Supporter role
+    MVP,        // MVP role
+    VIP,        // VIP role
+    USER        // Basic user role
 }

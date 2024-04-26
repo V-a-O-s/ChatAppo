@@ -1,4 +1,4 @@
-package ch.jchat.chatapp.controller;
+package ch.jchat.chatapp.controller.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,5 +24,9 @@ public class InviteController {
      * InviteName c
      * ExpirationDate c
      * Active c
+     * 
+     * create s
+     * modify c
+     * delete s
     */
 }
