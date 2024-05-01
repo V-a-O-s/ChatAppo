@@ -1,6 +1,6 @@
 # Aktuelle Version 1
 
-# JChat
+# ChatApp
 Eine Java Chat-Applikation mit Springboot, React und MySql für das Modul 322. 
 
 ## Funktionen
