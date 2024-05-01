@@ -1,4 +1,4 @@
-package ch.jchat.chatapp.controller.api;
+package ch.jchat.chatapp.controller.api.v1;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -8,29 +8,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/user")
-public class UserController {
-
+@RequestMapping("/api/v1/invite")
+public class InviteController {
+    
     @GetMapping("/hello")
     public ResponseEntity<String> getPublicResp(){
         return ResponseEntity.ok("Hello");
     }
-
+    
     /*
-     * (c change (multi) / s set (single))
-     * UserID s
-     * Username c
-     * Password c
-     * Salt s
-     * Email c 
-     * Role c
-     * Avatar (default GREEN) c
-     * Banned c
-     * CreationDate s
+     * (c change (multi) / s set (single) / d delete)
+     * InviteID sd
+     * ChatID s
+     * InvitedByUserID sd
+     * InviteName c
+     * ExpirationDate c
+     * Active c
      * 
      * create s
-     * modify c 
+     * modify c
      * delete s
-     * 
-     */
+    */
 }

@@ -5,5 +5,6 @@ public enum EPlatformRoles {
     SUPPORTER,  // Supporter role
     MVP,        // MVP role
     VIP,        // VIP role
+    VERIFIED,   // Verified Role
     USER        // Basic user role
 }

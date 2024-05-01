@@ -1,7 +1,6 @@
 package ch.jchat.chatapp.repositories;
 
 import java.util.Optional;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,6 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     boolean existsByPhone(String phone);
+    boolean existsByUserIDAndUsername(Long id, String username);
 
     List<User> findByRole(EPlatformRoles role);
     List<User> findByBanned(boolean banned);

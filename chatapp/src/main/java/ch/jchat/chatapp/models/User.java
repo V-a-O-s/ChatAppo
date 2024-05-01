@@ -4,12 +4,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import ch.jchat.chatapp.enums.EAvatar;
 import ch.jchat.chatapp.enums.EPlatformRoles;
+import ch.jchat.chatapp.models.auth.Token;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,6 +19,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -51,10 +54,6 @@ public class User implements UserDetails {
     private String password;
 
     @NotNull
-    @Column(length = 33)
-    private String salt;
-
-    @NotNull
     @Email
     @Column(length = 255)
     private String email;
@@ -71,22 +70,27 @@ public class User implements UserDetails {
     private Date creationDate;
 
     @NotNull
-    private boolean banned;
+    private boolean banned = false;
+    private boolean enabled = false;
+    private boolean verified = false;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "RoleOnPlatform")
-    private EPlatformRoles role;
+    private EPlatformRoles role = EPlatformRoles.USER;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private EAvatar avatar;
+    private EAvatar avatar = EAvatar.GREEN;
+
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
     
     
 
     @Override
     public String toString() {
-        return "User [username=" + username + ", passwordHash=" + password + ", salt=" + salt + ", email=" + email
+        return "User [username=" + username + ", password=" + password + ", email=" + email
                 + ", backUpEmail=" + backUpEmail + ", phone=" + phone + ", creationDate=" + creationDate + ", banned="
                 + banned + ", role=" + role + ", avatar=" + avatar + "]";
     }
@@ -140,6 +144,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }
