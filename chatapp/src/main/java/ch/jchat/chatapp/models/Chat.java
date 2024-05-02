@@ -11,9 +11,11 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.NoArgsConstructor;
 import java.util.Date;
 
@@ -21,6 +23,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name = "Chats")
 public class Chat {
 
@@ -38,11 +41,14 @@ public class Chat {
     private Date creationDate;
 
     @NotNull
-    @Column(nullable = false, columnDefinition = "SMALLINT DEFAULT 2")
-    private Short userLimit = 2;
+    @Column(nullable = false)
+    private int userLimit = 2;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date lastMessage;
+    private Date lastActivity;
 
+    @NotNull
+    @NotBlank
+    private String chatName;
 }

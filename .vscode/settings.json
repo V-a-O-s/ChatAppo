@@ -1,3 +1,10 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "rpc.detailsViewing": "{problems}",
+    "rpc.detailsEditing": "In {file_name}:{current_line}:{current_column}",
+    "rpc.lowerDetailsDebugging": "Debugging: {file_name}",
+    "rpc.problemsText": "{problemsCount} problems found",
+    "rpc.removeLowerDetails": true,
+    "rpc.removeElapsedTime": true,
+    "rpc.removeDetails": true
 }

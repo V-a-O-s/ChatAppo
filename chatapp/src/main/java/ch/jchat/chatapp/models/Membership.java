@@ -1,8 +1,10 @@
 package ch.jchat.chatapp.models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import ch.jchat.chatapp.enums.EChatRoles;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -20,6 +22,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -27,6 +30,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Data
 @Entity
+@ToString
 @Table(name = "Memberships")
 public class Membership {
 
@@ -35,21 +39,22 @@ public class Membership {
     private Long membershipID;
 
     @ManyToOne
-    @JoinColumn(name = "chatID", nullable = false)
-    private Chat chat;
-
-    @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "chatID", nullable = false)
+    private Chat chat;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "user_role")
     private EChatRoles userRole;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date joinDate;
+    private LocalDateTime joinDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date chatTimeout;
+    private LocalDateTime chatTimeout;
 
     private boolean banned;
 

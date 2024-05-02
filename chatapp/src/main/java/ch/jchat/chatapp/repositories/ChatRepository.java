@@ -1,6 +1,5 @@
 package ch.jchat.chatapp.repositories;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,8 +11,7 @@ import ch.jchat.chatapp.models.Chat;
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Long> {
     Optional<Chat> findByChatID(Long ChatID);
-    Optional<Chat> findByOwnerUserID(Long userID);
-    Optional<Chat> findByLastMessage(Date lastMessage);
+    List<Chat> findByOwner_UserID(Long userID);
     List<Chat> findAll();
 }
 

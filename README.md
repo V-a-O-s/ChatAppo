@@ -3,25 +3,20 @@
 # ChatApp
 Eine Java Chat-Applikation mit Springboot, React und MySql für das Modul 322. 
 
-## Funktionen
+## Features
 Gruppenchats
-
 Privatnachrichten
+Umfangreiche REST-Api
 
-REST-Api
+Automatisches aufsetzten der Datenbank mit Docker
 
 # Setup-Anleitung
 
 ### Schritt 1: Docker-Container erstellen
 Navigieren Sie im Projektverzeichnis zum Unterordner `chatapp`. Starten Sie dort die Docker-Container, indem Sie den Befehl `docker-compose up -d` ausführen.
 
-### Schritt 2: MySQL Shell starten (Optional)
-Sobald die Container laufen, können Sie die MySQL-Shell mit folgendem Befehl öffnen:  
-`docker exec -it chatapp-db-1 mysql -pa`
-
-### Schritt 3: Applikation starten
-Nach erfolgreicher Einrichtung können Sie die Applikation in Ihrer bevorzugten Entwicklungsumgebung (IDE) starten. Der Startvorgang kann je nach verwendeter IDE unterschiedlich sein.
-
+### Schritt 2: Applikation starten
+Nach erfolgreicher Einrichtung, kann die Applikation in der bevorzugten Entwicklungsumgebung (IDE) gestartet werden. Der Startvorgang kann je nach verwendeter IDE unterschiedlich sein.
 
 # REST-Api Dokumentation
 ### Aktuelle API-Version: v1
@@ -42,7 +37,7 @@ Body: JSON
 localhost:8080/api/auth/login
 Body: JSON
 {
-    "username":"CoolGuy123",
+    "email":"megaCool@email.com",
     "password":"superSecret"
 }
 ```

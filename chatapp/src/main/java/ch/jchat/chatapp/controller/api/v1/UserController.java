@@ -86,10 +86,10 @@ public class UserController {
         if (user.isPresent() && Validator.isPhone(userList.get(1))) {
             
             user.get().setBackUpEmail(userList.get(1));
-            return ResponseEntity.ok("Backup-Email changed successfully");
+            return ResponseEntity.ok("Phone changed successfully");
         }
 
-        return ResponseEntity.badRequest().body("Backup-Email change not possible");
+        return ResponseEntity.badRequest().body("Phone change not possible");
     }
 
 

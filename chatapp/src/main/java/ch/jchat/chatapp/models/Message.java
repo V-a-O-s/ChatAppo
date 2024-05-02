@@ -40,7 +40,7 @@ public class Message {
     @JoinColumn(name = "userID", nullable = false)
     private User user;
 
-    @NotBlank(message = "Message text cannot be empty")
+    @NotBlank()
     private String messageText;
     
     @Temporal(TemporalType.TIMESTAMP)

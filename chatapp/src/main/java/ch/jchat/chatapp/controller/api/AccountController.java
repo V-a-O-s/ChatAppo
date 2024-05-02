@@ -1,18 +1,13 @@
 package ch.jchat.chatapp.controller.api;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.jchat.chatapp.enums.EPlatformRoles;
-import ch.jchat.chatapp.misc.AppConfig;
 import ch.jchat.chatapp.models.User;
 import ch.jchat.chatapp.models.auth.AuthenticationResponse;
 import ch.jchat.chatapp.repositories.UserRepository;
@@ -28,12 +23,6 @@ public class AccountController {
     
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;
-    private final AppConfig appConfig;
-
-    @GetMapping("/key")
-    public String key(){
-        return appConfig.getJwtSecret();
-    }
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> createUser(@RequestBody User user) {
@@ -54,11 +43,7 @@ public class AccountController {
         return new ResponseEntity<>("Verification not possible",HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> userLogout(@RequestBody User user){
-        return ResponseEntity.ok("Bye!");
-    }
-
+    /*
     @PostMapping("/upgrade")
     public ResponseEntity<?> upgradeAccount(@RequestBody List<String> upgrade){
         try {
@@ -70,36 +55,15 @@ public class AccountController {
         }
         
     }
+    //*/
 
     @PostMapping("/s/ban")
     public ResponseEntity<String> bannUser(@RequestBody User user){
-        if (isValid(userRepository, user)) {
-            userRepository.delete(user);
+        if (userRepository.existsById(user.getUserID())) {
+            userRepository.findById(user.getUserID()).get().setBanned(true);
+
             return ResponseEntity.ok(user.getUsername()+" was deleted");
         }
         return ResponseEntity.badRequest().body("Not able to ban this user");
-        
-        
-        
-
     }
-
-    private boolean isValid(UserRepository userRepository,User user){
-        
-        try {
-            userRepository.existsById(user.getUserID());
-        } catch (Exception e) {
-            try {
-                userRepository.existsByUsername(user.getUsername());
-            } catch (Exception ee) {
-                try {
-                    userRepository.existsById(user.getUserID());
-                } catch (Exception eee) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
 }

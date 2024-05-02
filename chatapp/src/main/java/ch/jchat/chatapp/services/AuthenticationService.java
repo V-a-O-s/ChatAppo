@@ -2,17 +2,15 @@ package ch.jchat.chatapp.services;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import ch.jchat.chatapp.enums.EAvatar;
 import ch.jchat.chatapp.enums.EPlatformRoles;
+import ch.jchat.chatapp.exceptions.EmailNotFoundException;
 import ch.jchat.chatapp.exceptions.UserAlreadyExists;
 import ch.jchat.chatapp.models.User;
 import ch.jchat.chatapp.models.auth.AuthenticationResponse;
@@ -21,9 +19,7 @@ import ch.jchat.chatapp.repositories.TokenRepository;
 import ch.jchat.chatapp.repositories.UserRepository;
 import ch.jchat.chatapp.security.jwt.JwtService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @AllArgsConstructor
 public class AuthenticationService{
@@ -37,7 +33,11 @@ public class AuthenticationService{
     public AuthenticationResponse register(User request) {
         
         userRepository.findByUsername(request.getUsername()).ifPresent(u -> {
-            throw new UserAlreadyExists("User with username " + request.getUsername() + " already exists.");
+            throw new UserAlreadyExists("User with the username " + request.getUsername() + " already exists.");
+        });
+
+        userRepository.findByEmail(request.getEmail()).ifPresent(u -> {
+            throw new UserAlreadyExists("User with the email " + request.getEmail() + " already exists.");
         });
 
         User newUser = new User();
@@ -63,13 +63,13 @@ public class AuthenticationService{
     public AuthenticationResponse authenticate(User request){
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
-                request.getUsername(), 
+                userRepository.findByEmail(request.getEmail()).get().getUsername(),
                 request.getPassword()
             )
         );
 
-        User user = userRepository.findByUsername(request.getUsername())
-            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + request.getUsername()));
+        User user = userRepository.findByEmail(request.getEmail())
+            .orElseThrow(() -> new EmailNotFoundException("User not found with email: " + request.getEmail()));
     
         String token = jwtService.generateToken(user);
         saveUserToken(user, token);

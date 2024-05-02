@@ -1,1 +1,4 @@
 /images
+.gitignore
+frontend-backup
+/.vscode

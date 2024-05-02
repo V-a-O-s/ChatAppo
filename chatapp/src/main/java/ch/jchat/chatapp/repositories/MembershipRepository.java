@@ -13,16 +13,19 @@ import ch.jchat.chatapp.models.Membership;
 
 @Repository
 public interface MembershipRepository extends JpaRepository<Membership, Long> {
-    Optional<Membership> findByMembershipID(Long MembershipID);
+    Optional<Membership> findByMembershipID(Long membershipID);
+    Optional<Membership> findByChatChatIDAndUserUserID(Long chatID, Long userID);
 
-    List<Membership> findByUserUserID(Long userId);
-    List<Membership> findUsersByChatChatID(Long chatID);
-    List<Membership> findUsersByChatChatIDAndUserRole(Long chatID, EChatRoles userRole);
-    List<Membership> findUsersByChatChatIDAndJoinDate(Long chatID, Date joinDate);
+    List<Membership> findByUser_UserID(Long userId);
+    List<Membership> findUsersByChat_ChatID(Long chatID);
+    List<Membership> findUsersByChat_ChatIDAndUserRole(Long chatID, EChatRoles userRole);
+    List<Membership> findUsersByChat_ChatIDAndJoinDate(Long chatID, Date joinDate);
 
-    @Query("SELECT m FROM Membership m WHERE m.chat.id = :chatId AND m.banned = true")
-    Optional<List<Membership>> findBannedMembersByChatId(Long chatId);
+    boolean existsByChatChatIDAndUserUserID(Long chatID, Long userID);
 
-    @Query("SELECT m FROM Membership m WHERE m.chat.id = :chatId AND m.banned = false")
+    @Query("SELECT m FROM Membership m WHERE m.chat.chatID = :chatId AND m.banned = true")
+    List<Membership> findBannedMembersByChatId(Long chatId);
+
+    @Query("SELECT m FROM Membership m WHERE m.chat.chatID = :chatId AND m.banned = false")
     List<Membership> findActiveMembersByChatId(Long chatId);
 }
