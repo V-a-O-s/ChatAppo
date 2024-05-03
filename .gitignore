@@ -1,4 +1,3 @@
 /images
-.gitignore
 frontend-backup
-/.vscode
+db.cmd

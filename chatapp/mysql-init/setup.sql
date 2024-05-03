@@ -1,9 +1,9 @@
 -- Ensure the database exists
-CREATE DATABASE IF NOT EXISTS abc;
-USE abc;
+CREATE DATABASE IF NOT EXISTS chatapp_db;
+USE chatapp_db;
 
 -- Create a user for the application with appropriate privileges
-CREATE USER IF NOT EXISTS 'chatapp_admin'@'%' IDENTIFIED BY 'admin';
+CREATE USER IF NOT EXISTS 'chatapp_admin' IDENTIFIED BY 'admin';
 GRANT ALL PRIVILEGES ON chatapp_db.* TO 'chatapp_admin';
 FLUSH PRIVILEGES;
 

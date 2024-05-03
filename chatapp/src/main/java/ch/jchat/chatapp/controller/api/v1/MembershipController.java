@@ -2,6 +2,7 @@ package ch.jchat.chatapp.controller.api.v1;
 
 import java.lang.reflect.Member;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -101,18 +102,57 @@ public class MembershipController {
         return ResponseEntity.ok("The role from the User: '"+target.getUsername()+"' updated successfully.");
     }
 
+    @PostMapping("/ban")
+    public ResponseEntity<String> banUser(@RequestBody Membership target) {
+        User currentUser = getCurrentAuthenticatedUser();
+        //User target = userRepository.findByUserID(targetID).orElseThrow();
+
+        if (!canChangeRole(membershipRepository.findByChatChatIDAndUserUserID(target.getChat().getChatID(), currentUser.getUserID()).get(),
+                membershipRepository.findByChatChatIDAndUserUserID(target.getChat().getChatID(), 
+                target.getUser().getUserID()).orElseThrow().getUserRole())) {
+        
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized Action.");
+        }
+
+        Membership targetMembership = membershipRepository.findByChatChatIDAndUserUserID(target.getChat().getChatID(), target.getUser().getUserID())
+                .orElseThrow();
+
+        if (!canChangeRole(membershipRepository.findByChatChatIDAndUserUserID(target.getChat().getChatID(), currentUser.getUserID()).get(),targetMembership.getUserRole())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized Action.");
+        }
+
+        String banReason;
+        if(target.getBanReason().isEmpty() || target.getBanReason().length()>255){
+            Date d = new Date();
+            banReason = "User was banned by "+currentUser.getUsername()+" on "+d;
+        }else{
+            banReason = target.getBanReason();
+        }
+
+
+        targetMembership.setUserRole(EChatRoles.CHAT_LOCKED);
+        targetMembership.setBanDate(new Date());
+        targetMembership.setBanned(true);
+        targetMembership.setBanReason(banReason);
+        membershipRepository.save(targetMembership);
+
+        return ResponseEntity.ok(userRepository.findById(target.getUser().getUserID()).get().getUsername()+" was Banned.");
+    }
+
     private User getCurrentAuthenticatedUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    private boolean canChangeRole(Membership changer, EChatRoles newRole) {
+
+
+    private boolean canChangeRole(Membership changer, EChatRoles targetRole) {
         switch (changer.getUserRole()) {
             case CHAT_OWNER:
                 return true;
             case CHAT_MODERATOR:
-                return newRole == EChatRoles.CHAT_USER || newRole == EChatRoles.CHAT_LOCKED;
+                return targetRole == EChatRoles.CHAT_USER || targetRole == EChatRoles.CHAT_LOCKED;
             default:
                 return false;
         }
