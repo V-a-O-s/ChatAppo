@@ -28,21 +28,19 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SecurityConfiguration {
 
-    private final UserDetailService userDetailService;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final CustomAccessDeniedHandler accessDeniedHandler;
-    private final CustomLogoutHandler customLogoutHandler;
+    private UserDetailService userDetailService;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private CustomAccessDeniedHandler accessDeniedHandler;
+    private CustomLogoutHandler customLogoutHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth ->
-        auth.requestMatchers("/api/auth/**").permitAll()
+        auth.requestMatchers("/api/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
             .requestMatchers("/api/v*/team/admin/**").hasRole(EPlatformRoles.ADMIN.name())
-            .requestMatchers("/api/v*/team/support/**","/api/v*/auth/s/**").hasAnyRole(EPlatformRoles.ADMIN.name(), EPlatformRoles.SUPPORTER.name())
-            .requestMatchers("/api/v*/user/mvp/**").hasAnyRole(EPlatformRoles.ADMIN.name(), EPlatformRoles.SUPPORTER.name(), EPlatformRoles.MVP.name())
-            .requestMatchers("/api/v*/user/vip/**").hasAnyRole(EPlatformRoles.ADMIN.name(), EPlatformRoles.SUPPORTER.name(), EPlatformRoles.MVP.name(), EPlatformRoles.VIP.name())
-            .requestMatchers("/pipi","/api/v1/user/hello").hasAnyRole(EPlatformRoles.ADMIN.name(), EPlatformRoles.SUPPORTER.name(), EPlatformRoles.MVP.name(), EPlatformRoles.VIP.name(), EPlatformRoles.USER.name())
+            .requestMatchers("/api/v*/team/support/**","/api/auth/s/**").hasAnyRole(EPlatformRoles.ADMIN.name(), EPlatformRoles.SUPPORTER.name())
+            .requestMatchers("/api/v1/user/**").hasAnyRole(EPlatformRoles.ADMIN.name(), EPlatformRoles.SUPPORTER.name(), EPlatformRoles.MVP.name(), EPlatformRoles.VIP.name(), EPlatformRoles.USER.name())
             .anyRequest()
             .authenticated()
         ).userDetailsService(userDetailService)

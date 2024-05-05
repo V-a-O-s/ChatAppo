@@ -1,18 +1,16 @@
 package ch.jchat.chatapp.controller.api.v1;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.jchat.chatapp.enums.EAvatar;
+import ch.jchat.chatapp.misc.UserAuth;
 import ch.jchat.chatapp.misc.Validator;
 import ch.jchat.chatapp.models.User;
 import ch.jchat.chatapp.repositories.UserRepository;
@@ -26,98 +24,80 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserAuth userAuth;
 
-    @GetMapping("/hello")
-    public ResponseEntity<String> getPublicResp(){
-        return ResponseEntity.ok("Hello");
-    }
-
-    @PutMapping("username")
-    public ResponseEntity<String> changUsername(@RequestBody List<String> user){
-        if (userRepository.existsByUsername(user.get(0))) {
-            userRepository.findByUsername(user.get(0)).get().setUsername(user.get(1));
+    @PostMapping("/username")
+    public ResponseEntity<String> changUsername(@RequestBody String user){
+        User currentUser = userAuth.getUser();
+        if (Validator.isName(user) && userRepository.findByUsername(user).isEmpty()) {
+            currentUser.setUsername(user);
+            userRepository.save(currentUser);
             return ResponseEntity.ok("Username changed successfully");
         }
-
-        return ResponseEntity.badRequest().body("Username change not possible");
+        return new ResponseEntity<>("Invalid Username. Or it is already choosen.", HttpStatus.CONFLICT);
+        
     }
-
-    @PutMapping("/password")
-    public ResponseEntity<String> changePassword(@RequestBody List<String> userList){
-        Optional<User> user = userRepository.findByUsername(userList.get(0));
-        if (user.isPresent() && passwordEncoder.matches(userList.get(1), user.get().getPassword())) {
-            
-            user.get().setPassword(passwordEncoder.encode(userList.get(2)));
+    @PostMapping("/password")
+    public ResponseEntity<String> changePassword(@RequestBody String oldPassword, String newPassword){
+        User currentUser = userAuth.getUser();
+        if (passwordEncoder.matches(oldPassword, currentUser.getPassword())){
+            currentUser.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(currentUser);
             return ResponseEntity.ok("Password changed successfully");
         }
-
-        return ResponseEntity.badRequest().body("Password change not possible");
+        return ResponseEntity.badRequest().body("Something went wrong");
     }
-
-    @PutMapping("/email")
-    public ResponseEntity<String> changeEmail(@RequestBody List<String> userList){
-        Optional<User> user = userRepository.findByEmail(userList.get(0));
-        if (user.isPresent() && Validator.isEmail(userList.get(0))) {
-            
-            user.get().setEmail(userList.get(1));
+    @PostMapping("/email")
+    public ResponseEntity<String> changeEmail(@RequestBody String email){
+        User currentUser = userAuth.getUser(); //Made By Valentin Ostertag
+        if (Validator.isEmail(email) && userRepository.findByEmail(email).isEmpty()) {
+            currentUser.setEmail(email);
+            userRepository.save(currentUser);
             return ResponseEntity.ok("Email changed successfully");
         }
-
         return ResponseEntity.badRequest().body("Email change not possible");
     }
-    @PutMapping("/backupemail")
-    public ResponseEntity<String> changeBackupEmail(@RequestBody List<String> userList){
-        Optional<User> user = userRepository.findByBackUpEmail(userList.get(0));
-        if (user.isPresent() && Validator.isEmail(userList.get(1))) {
-            
-            user.get().setBackUpEmail(userList.get(1));
+    @PostMapping("/backupemail")
+    public ResponseEntity<String> changeBackupEmail(@RequestBody String email){
+        User currentUser = userAuth.getUser();
+        if (Validator.isEmail(email)) {
+            currentUser.setBackUpEmail(email);
+            userRepository.save(currentUser);
             return ResponseEntity.ok("Backup-Email changed successfully");
         }
-
         return ResponseEntity.badRequest().body("Backup-Email change not possible");
     }
-
-    @PutMapping("/phone")
-    public ResponseEntity<String> changePhone(@RequestBody List<String> userList){
-        Optional<User> user = userRepository.findByEmail(userList.get(0));
-        if (user.isPresent() && Validator.isPhone(userList.get(1))) {
-            
-            user.get().setBackUpEmail(userList.get(1));
+    @PostMapping("/phone")
+    public ResponseEntity<String> changePhone(@RequestBody String phone){
+        User currentUser = userAuth.getUser();
+        phone = phone.replaceAll("\\s", "");
+        if (Validator.isPhone(phone) && userRepository.findByPhone(phone).isEmpty()) {
+            currentUser.setPhone(phone);
+            userRepository.save(currentUser);
             return ResponseEntity.ok("Phone changed successfully");
         }
-
         return ResponseEntity.badRequest().body("Phone change not possible");
     }
-
-
-    @PutMapping("/avatar")
-    public ResponseEntity<String> changeAvatar(@RequestBody List<String> userList){
-        Optional<User> user = userRepository.findByUsername(userList.get(0));
-        if (user.isPresent()) {
-            
-            try {
-                user.get().setAvatar(EAvatar.valueOf(userList.get(1)));
-                return ResponseEntity.ok("Avatar changed successfully");
-            } catch (Exception e) {
-                return ResponseEntity.ok("Avatar not available");
-            }    
+    @PostMapping("/avatar")
+    public ResponseEntity<String> changeAvatar(@RequestBody User user){
+        User currentUser = userAuth.getUser();
+        try{
+            currentUser.setAvatar(user.getAvatar());
+            userRepository.save(currentUser);
+            return ResponseEntity.ok("Avatar changed successfully");
+        } catch (Exception e) {
+            return ResponseEntity.ok("Avatar not available");
         }
-        return ResponseEntity.badRequest().body("Avatar change not possible. User not found");
     }
-
-    /*
-     * (c change (multi) / s set (single))
-     * Username c -
-     * Password c -
-     * Email c - 
-     * Avatar (default GREEN) c -
-     * 
-     * create s
-     * modify c 
-     * delete s
-     * 
-     */
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteUser(@RequestBody String password){
+        User currentUser = userAuth.getUser();
+        if (passwordEncoder.matches(password, currentUser.getPassword())) {
+            return ResponseEntity.ok("Account Deleted.");
+        }
+        return ResponseEntity.badRequest().body("Something went wrong. Try again later.");
+    }
 }

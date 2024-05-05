@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,20 +48,24 @@ public class User implements UserDetails {
     @Column(length = 20)
     private String username;
 
+    @ToStringExclude
     @NotBlank
     @NotNull
     @Column(length = 255)
     private String password;
 
+    @ToStringExclude
     @NotNull
     @Email
     @Column(length = 255)
     private String email;
 
+    @ToStringExclude
     @Email
     @Column(length = 255)
     private String backUpEmail;
 
+    @ToStringExclude
     @Column(length = 20)
     private String phone;
 
@@ -82,6 +87,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private EAvatar avatar = EAvatar.GREEN;
 
+    @ToStringExclude
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
     
