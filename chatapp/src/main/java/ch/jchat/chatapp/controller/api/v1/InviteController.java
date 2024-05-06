@@ -18,8 +18,9 @@ import ch.jchat.chatapp.models.Invite;
 import ch.jchat.chatapp.models.User;
 import ch.jchat.chatapp.repositories.ChatRepository;
 import ch.jchat.chatapp.repositories.InviteRepository;
-import ch.jchat.chatapp.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1/invite")
@@ -27,8 +28,6 @@ public class InviteController {
     
     @Autowired
     private ChatRepository chatRepository;
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private InviteRepository inviteRepository;
     @Autowired
@@ -55,6 +54,7 @@ public class InviteController {
         newInvite.setExpirationDate(new Date(Long.valueOf("7956915742") ));
         newInvite.setInviteName(invite.getInviteName());
         newInvite.setInvitedByUser(chat.getOwner());
+        inviteRepository.save(newInvite);
         
         return ResponseEntity.ok("Inivte: "+invite.getInviteName()+", was created.");
     }
@@ -64,6 +64,7 @@ public class InviteController {
         Chat chat = chatRepository.findByChatID(oldInviteID).orElseThrow();
         Optional<Invite> oldInvite = inviteRepository.findByInviteID(oldInviteID);
 
+        log.debug(chat.toString()+"\n"+currentUser.toString());
         if (chat.getOwner().getUserID() != currentUser.getUserID()) {
             return new ResponseEntity<>("Unauthorized.",HttpStatus.UNAUTHORIZED);
         }
@@ -82,6 +83,7 @@ public class InviteController {
             oldInvite.get().setExpirationDate(invite.getExpirationDate());
             oldInvite.get().setInviteName(invite.getInviteName());
             oldInvite.get().setInvitedByUser(chat.getOwner());
+            inviteRepository.save(oldInvite.get());
             return new ResponseEntity<>("Updated the Invite",HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Could not update the Invite.",HttpStatus.BAD_REQUEST);

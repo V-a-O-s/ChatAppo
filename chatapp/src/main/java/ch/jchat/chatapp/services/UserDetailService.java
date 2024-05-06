@@ -32,7 +32,6 @@ public class UserDetailService implements UserDetailsService {
             throw new UsernameNotFoundException("User is banned: " + username);
         }
 
-        // Assuming `getRole` returns the single role for the user
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
 
         log.info("User loaded successfully: {}", username);

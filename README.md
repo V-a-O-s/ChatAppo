@@ -18,6 +18,13 @@ Navigieren Sie im Projektverzeichnis zum Unterordner `chatapp`. Starten Sie dort
 ### Schritt 2: Applikation starten
 Nach erfolgreicher Einrichtung, kann die Applikation in der bevorzugten Entwicklungsumgebung (IDE) gestartet werden. Der Startvorgang kann je nach verwendeter IDE unterschiedlich sein.
 
+# Sicherheitskonzept
+## Platform
+Admin, Supporter, User
+
+## Chat
+Owner, Moderator, User, Locked/Gebannt
+
 # REST-Api Dokumentation
 ### Aktuelle API-Version: v1
 

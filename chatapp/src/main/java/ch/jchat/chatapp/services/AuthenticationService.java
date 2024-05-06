@@ -50,14 +50,11 @@ public class AuthenticationService{
         newUser.setRole(EPlatformRoles.USER);
         newUser.setAvatar(EAvatar.GREEN);
         newUser.setEnabled(true);
-
         newUser = userRepository.save(newUser);
+
         String token = jwtService.generateToken(newUser);
-        
         saveUserToken(newUser, token);
-
         return new AuthenticationResponse(token);
-
     }
     
     public AuthenticationResponse authenticate(User request){

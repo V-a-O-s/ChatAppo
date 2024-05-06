@@ -27,7 +27,6 @@ public class JwtService {
 
     @Autowired
     private AppConfig appConfig;
-    //private final String SECRET_KEY = appConfig.getJwtSecret();
 
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
@@ -66,7 +65,7 @@ public class JwtService {
         .builder()
         .subject(user.getUsername())
         .issuedAt(new Date(System.currentTimeMillis()))
-        .expiration(new Date(System.currentTimeMillis() + 24*60*60*1000))
+        .expiration(new Date(System.currentTimeMillis() + appConfig.getJwtExpiration()))
         .signWith(getSigninKey())
         .compact();
         return token;

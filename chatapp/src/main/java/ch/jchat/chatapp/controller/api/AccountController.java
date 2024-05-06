@@ -1,15 +1,22 @@
 package ch.jchat.chatapp.controller.api;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ch.jchat.chatapp.enums.EPlatformRoles;
+import ch.jchat.chatapp.misc.UserAuth;
 import ch.jchat.chatapp.models.User;
 import ch.jchat.chatapp.models.auth.AuthenticationResponse;
+import ch.jchat.chatapp.models.dto.VerifyDto;
 import ch.jchat.chatapp.repositories.UserRepository;
 import ch.jchat.chatapp.services.AuthenticationService;
 import lombok.AllArgsConstructor;
@@ -21,8 +28,14 @@ import lombok.AllArgsConstructor;
 public class AccountController {
 
     
-    private final UserRepository userRepository;
-    private final AuthenticationService authenticationService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private AuthenticationService authenticationService;
+    @Autowired
+    private UserAuth userAuth;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> createUser(@RequestBody User user) {
@@ -35,12 +48,20 @@ public class AccountController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<String> verifyUser(@RequestBody String email){
-
-        if(userRepository.existsByEmail(email)){
-            return ResponseEntity.ok("User Verified.");
+    public ResponseEntity<String> verifyUser(@RequestBody VerifyDto authUser){
+        //User currentUser = userAuth.getUser();
+        Optional<User> user = userRepository.findByEmail(authUser.getEmail().replaceAll("\"", ""));
+        if (user.get().isVerified() || !user.isPresent()) {
+            return new ResponseEntity<>("User already Verified or User doesn't exist.",HttpStatus.CONFLICT);
+        } else {
+            if (passwordEncoder.matches(authUser.getPassword(), user.get().getPassword())) {
+                user.get().setVerified(true);
+                userRepository.save(user.get());
+                return ResponseEntity.ok("User Verified.");
+            }
+            return new ResponseEntity<>("Password does not match.",HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("Verification not possible",HttpStatus.BAD_REQUEST);
+        
     }
 
     /*
@@ -59,7 +80,8 @@ public class AccountController {
 
     @PostMapping("/s/ban")
     public ResponseEntity<String> bannUser(@RequestBody User user){
-        if (userRepository.existsById(user.getUserID())) {
+        User admin = userAuth.getUser();
+        if (userRepository.existsById(user.getUserID()) && admin.getRole()==EPlatformRoles.ADMIN) {
             userRepository.findById(user.getUserID()).get().setBanned(true);
 
             return ResponseEntity.ok(user.getUsername()+" was deleted");

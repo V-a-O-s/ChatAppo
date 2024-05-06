@@ -15,4 +15,7 @@ public class AppConfig {
     @Value("${myapp.jwtExpirationMs}")
     private Long jwtExpiration;
 
+    @Value("${myapp.appName}")
+    private String appName;
+
 }
