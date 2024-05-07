@@ -18,6 +18,7 @@ import ch.jchat.chatapp.misc.UserAuth;
 import ch.jchat.chatapp.models.Membership;
 import ch.jchat.chatapp.models.Message;
 import ch.jchat.chatapp.models.User;
+import ch.jchat.chatapp.models.dto.UserDto;
 import ch.jchat.chatapp.repositories.ChatRepository;
 import ch.jchat.chatapp.repositories.MembershipRepository;
 import ch.jchat.chatapp.repositories.MessageRepository;
@@ -37,6 +38,8 @@ public class MessageController {
     private MembershipRepository membershipRepository;
     @Autowired
     private MessageRepository messageRepository;
+    @Autowired
+    private UserDto userDto;
 
     @PostMapping("/send")
     public ResponseEntity<?> sendMessage(@RequestBody Message msg){
@@ -47,10 +50,13 @@ public class MessageController {
         }
         Message newMsg = new Message();
         log.debug(msg.getMessageText().length()+" - "+msg.getMessageText());
+        
+
+
         newMsg.setChat(chatRepository.findByChatID(msg.getChat().getChatID()).orElseThrow());
         newMsg.setMessageText((msg.getMessageText().length()<=2000 && !msg.getMessageText().isEmpty())?msg.getMessageText():"This user tried to send a invalid Message. Boo him B)");
         newMsg.setSendingTime(new Date());
-        newMsg.setUser(currentUser);
+        newMsg.setUser(userDto.toDto(currentUser));
         messageRepository.save(newMsg);
         return new ResponseEntity<>("Message send ",HttpStatus.OK) ;
     }

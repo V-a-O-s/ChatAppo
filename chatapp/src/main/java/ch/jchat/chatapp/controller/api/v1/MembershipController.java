@@ -17,6 +17,7 @@ import ch.jchat.chatapp.misc.UserAuth;
 import ch.jchat.chatapp.models.Chat;
 import ch.jchat.chatapp.models.Membership;
 import ch.jchat.chatapp.models.User;
+import ch.jchat.chatapp.models.dto.UserDto;
 import ch.jchat.chatapp.repositories.ChatRepository;
 import ch.jchat.chatapp.repositories.MembershipRepository;
 import ch.jchat.chatapp.repositories.UserRepository;
@@ -33,6 +34,8 @@ public class MembershipController {
     private ChatRepository chatRepository;
     @Autowired
     private UserAuth userAuth;
+    @Autowired
+    private UserDto userDto;
 
     @PostMapping("/join/{chatID}")
     public ResponseEntity<?> joinChat(@PathVariable Long chatID) {

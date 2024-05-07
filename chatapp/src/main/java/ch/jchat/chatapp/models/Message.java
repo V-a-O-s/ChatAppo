@@ -18,6 +18,8 @@ import lombok.AllArgsConstructor;
 
 import java.util.Date;
 
+import ch.jchat.chatapp.models.dto.UserDto;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -38,7 +40,7 @@ public class Message {
     @ManyToOne
     @NotNull
     @JoinColumn(name = "userID", nullable = false)
-    private User user;
+    private UserDto user;
 
     @NotBlank()
     private String messageText;
