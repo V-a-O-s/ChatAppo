@@ -1,5 +1,6 @@
 package ch.jchat.chatapp.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,8 +19,6 @@ import lombok.AllArgsConstructor;
 
 import java.util.Date;
 
-import ch.jchat.chatapp.models.dto.UserDto;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,17 +29,20 @@ public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long messageID;
+    private Long messageid;
 
-    @ManyToOne
+    //@ManyToOne
+    //@JoinColumn(name = "chatID", nullable = false)
     @NotNull
-    @JoinColumn(name = "chatID", nullable = false)
-    private Chat chat;
+    @Column(name = "chatID")
+    private Long chatid;
 
-    @ManyToOne
+    //@ManyToOne
+    //@NotNull
+    //@JoinColumn(name = "userID", nullable = false)
     @NotNull
-    @JoinColumn(name = "userID", nullable = false)
-    private UserDto user;
+    @Column(name = "userID")
+    private Long userid;
 
     @NotBlank()
     private String messageText;

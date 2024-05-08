@@ -15,6 +15,7 @@ import ch.jchat.chatapp.exceptions.UserAlreadyExists;
 import ch.jchat.chatapp.models.User;
 import ch.jchat.chatapp.models.auth.AuthenticationResponse;
 import ch.jchat.chatapp.models.auth.Token;
+import ch.jchat.chatapp.models.dto.AuthDto;
 import ch.jchat.chatapp.repositories.TokenRepository;
 import ch.jchat.chatapp.repositories.UserRepository;
 import ch.jchat.chatapp.security.jwt.JwtService;
@@ -30,7 +31,7 @@ public class AuthenticationService{
     private final AuthenticationManager authenticationManager;
     private final TokenRepository tokenRepository;
 
-    public AuthenticationResponse register(User request) {
+    public AuthenticationResponse register(AuthDto request) {
         
         userRepository.findByUsername(request.getUsername()).ifPresent(u -> {
             throw new UserAlreadyExists("User with the username " + request.getUsername() + " already exists.");
@@ -57,7 +58,7 @@ public class AuthenticationService{
         return new AuthenticationResponse(token);
     }
     
-    public AuthenticationResponse authenticate(User request){
+    public AuthenticationResponse authenticate(AuthDto request){
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 userRepository.findByEmail(request.getEmail()).get().getUsername(),

@@ -17,34 +17,28 @@ import ch.jchat.chatapp.models.Chat;
 import ch.jchat.chatapp.models.User;
 import ch.jchat.chatapp.repositories.ChatRepository;
 import ch.jchat.chatapp.repositories.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1/chat")
+@AllArgsConstructor
 public class ChatController {
 
-    @Autowired
-    private ChatRepository chatRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserAuth userAuth; 
+
+    private final ChatRepository chatRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserAuth userAuth; 
     @PostMapping("/create")
     public ResponseEntity<String> createChat(@RequestBody Chat chat){
         User currentUser = userAuth.getUser();
-        String OwnerName = currentUser.getUsername();
-        if (!userRepository.existsByUsername(OwnerName)) {
-            return ResponseEntity.badRequest().body("Error while creating Chat with "+OwnerName+" as the Owner");
-        }
         Chat newChat = new Chat();
-        newChat.setOwner(userRepository.findByUsername(OwnerName).get());
+        newChat.setOwner(currentUser.getUserID());
         newChat.setCreationDate(new Date());
         newChat.setUserLimit((chat.getUserLimit()<255)?chat.getUserLimit():10);
-        newChat.setLastActivity(new Date());
         newChat.setChatName(chat.getChatName());
         chatRepository.save(newChat);
         log.debug("Created Chat: "+newChat.toString());
@@ -55,7 +49,7 @@ public class ChatController {
         User currentUser = userAuth.getUser();
         Chat target = chatRepository.findByChatID(chat.getChatID()).orElseThrow();
         log.debug("Setting ChannelLimit to "+chat.getUserLimit());
-        if (target.getOwner().getUserID()==currentUser.getUserID()) {
+        if (target.getOwner()==currentUser.getUserID()) {
             target.setUserLimit(chat.getUserLimit());
             chatRepository.save(target);
             return ResponseEntity.ok("Userlimit set to "+chat.getUserLimit());
@@ -67,7 +61,7 @@ public class ChatController {
         User currentUser = userAuth.getUser();
         Chat target = chatRepository.findByChatID(chat.getChatID()).orElseThrow();
         log.debug("\n"+target.toString());
-        if (target.getOwner().getUserID()==currentUser.getUserID()) {
+        if (target.getOwner()==currentUser.getUserID()) {
             target.setChatName(chat.getChatName());
             chatRepository.save(target);
             return ResponseEntity.ok("Chatname set to "+chat.getChatName());
@@ -77,8 +71,8 @@ public class ChatController {
     @PostMapping("/delete")
     public ResponseEntity<String> deleteChat(@RequestBody Chat chat){
         User currentUser = userAuth.getUser();
-        if (currentUser.getUserID()==chat.getOwner().getUserID() 
-        && passwordEncoder.matches(chat.getOwner().getPassword(), 
+        if (currentUser.getUserID()==chat.getOwner()
+        && passwordEncoder.matches(userRepository.findByUserID(chat.getOwner()).get().getPassword(), 
                                     userRepository.findByUserID(currentUser.getUserID()).get().getPassword())) {
             chatRepository.delete(chat);
             return new ResponseEntity<>(chat.getChatName()+" was deleted.",HttpStatus.OK);

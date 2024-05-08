@@ -29,8 +29,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Entity
 @ToString
+@Entity
 @Table(name = "Memberships")
 public class Membership {
 
@@ -38,28 +38,26 @@ public class Membership {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long membershipID;
 
-    @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
-    private User user;
+    @Column(name = "userID", nullable = false)
+    private Long userID;  // Treat as foreign key ID to User entity
 
-    @ManyToOne
-    @JoinColumn(name = "chatID", nullable = false)
-    private Chat chat;
+    @Column(name = "chatID", nullable = false)
+    private Long chatID;  // Treat as foreign key ID to Chat entity
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_role")
     private EChatRoles userRole;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime joinDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime chatTimeout;
 
     private boolean banned;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(columnDefinition = "TIMESTAMP")
     private Date banDate;
 
     private String banReason;
+
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime chatTimeout;
 }

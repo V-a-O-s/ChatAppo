@@ -31,9 +31,10 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatID;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ownerID", nullable = false)
-    private User owner;
+    //@ManyToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "ownerID", nullable = false)
+    @Column(name = "ownerID")
+    private Long owner;
 
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
@@ -43,10 +44,6 @@ public class Chat {
     @NotNull
     @Column(nullable = false)
     private int userLimit = 2;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
-    private Date lastActivity;
 
     @NotNull
     @NotBlank

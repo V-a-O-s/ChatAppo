@@ -70,7 +70,7 @@ public class User implements UserDetails {
     private String phone;
 
     @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(columnDefinition = "TIMESTAMP")
     private Date creationDate;
 
     @NotNull

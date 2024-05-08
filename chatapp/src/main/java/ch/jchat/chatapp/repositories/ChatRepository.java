@@ -10,8 +10,8 @@ import ch.jchat.chatapp.models.Chat;
 
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Long> {
-    Optional<Chat> findByChatID(Long ChatID);
-    List<Chat> findByOwner_UserID(Long userID);
+    Optional<Chat> findByChatID(Long chatID);
+    List<Chat> findByOwner(Long userID);
     List<Chat> findAll();
 }
 

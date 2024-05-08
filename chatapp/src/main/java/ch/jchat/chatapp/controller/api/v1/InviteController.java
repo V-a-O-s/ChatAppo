@@ -18,30 +18,33 @@ import ch.jchat.chatapp.models.Invite;
 import ch.jchat.chatapp.models.User;
 import ch.jchat.chatapp.repositories.ChatRepository;
 import ch.jchat.chatapp.repositories.InviteRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1/invite")
+@AllArgsConstructor
 public class InviteController {
     
-    @Autowired
-    private ChatRepository chatRepository;
-    @Autowired
-    private InviteRepository inviteRepository;
-    @Autowired
-    private UserAuth userAuth;
+    private final ChatRepository chatRepository;
+    private final InviteRepository inviteRepository;
+    private final UserAuth userAuth;
 
     @PostMapping("/create")
     public ResponseEntity<String> createInvite(@RequestBody Invite invite){
         User currentUser = userAuth.getUser();
-        Chat chat = chatRepository.findByChatID(invite.getChat().getChatID()).orElseThrow();
+        Chat chat = chatRepository.findByChatID(invite.getChatID()).orElseThrow();
+        Optional<Invite> inv = inviteRepository.findByChatID(invite.getChatID());
 
-        if (chat.getOwner().getUserID() != currentUser.getUserID()) {
+        if (chat.getOwner() != currentUser.getUserID()) {
             return new ResponseEntity<>("Unauthorized.",HttpStatus.UNAUTHORIZED);
         }
-        if (inviteRepository.existsByChatChatID(chat.getChatID())) {
+        if (inv.isPresent()) {
+            return new ResponseEntity<>("An Invite for this Channel already exists.", HttpStatus.CONFLICT);            
+        }
+        if (inviteRepository.existsByChatID(chat.getChatID())) {
             return new ResponseEntity<>("An invite for this Chat already exists.",HttpStatus.CONFLICT);
         }
         if (inviteRepository.existsByInviteName(invite.getInviteName()) || invite.getInviteName().isBlank()) {
@@ -50,7 +53,7 @@ public class InviteController {
 
         Invite newInvite = new Invite();
         newInvite.setActive(true);
-        newInvite.setChat(chat);
+        newInvite.setChatID(chat.getChatID());
         newInvite.setExpirationDate(new Date(Long.valueOf("7956915742") ));
         newInvite.setInviteName(invite.getInviteName());
         newInvite.setInvitedByUser(chat.getOwner());
@@ -59,49 +62,31 @@ public class InviteController {
         return ResponseEntity.ok("Inivte: "+invite.getInviteName()+", was created.");
     }
     @PostMapping("/update")
-    public ResponseEntity<String> updateInvite(@RequestBody Long oldInviteID, Invite invite){
+    public ResponseEntity<String> updateInvite(@RequestBody Invite invite){
         User currentUser = userAuth.getUser();
-        Chat chat = chatRepository.findByChatID(oldInviteID).orElseThrow();
-        Optional<Invite> oldInvite = inviteRepository.findByInviteID(oldInviteID);
+        Optional<Invite> oi = inviteRepository.findByChatID(invite.getChatID());
+        Invite oldInvite;
+        if(oi.isPresent()){oldInvite = oi.get();}else{return new ResponseEntity<>("Invite does not exist.",HttpStatus.BAD_REQUEST);}
+
+        Chat chat = chatRepository.findByChatID(oldInvite.getChatID()).orElseThrow();
 
         log.debug(chat.toString()+"\n"+currentUser.toString());
-        if (chat.getOwner().getUserID() != currentUser.getUserID()) {
+        if (chat.getOwner() != currentUser.getUserID()) {
             return new ResponseEntity<>("Unauthorized.",HttpStatus.UNAUTHORIZED);
-        }
-        if (inviteRepository.existsByChatChatID(chat.getChatID())) {
-            return new ResponseEntity<>("An invite for this Chat already exists.",HttpStatus.CONFLICT);
         }
         if (inviteRepository.existsByInviteName(invite.getInviteName()) || invite.getInviteName().isBlank()) {
             return new ResponseEntity<>("Could not create a Invite with this name.",HttpStatus.CONFLICT);
         }
-        if (!inviteRepository.existsByInviteID(oldInviteID)) {
-            return new ResponseEntity<>("Could not create a Invite with this ID.",HttpStatus.BAD_REQUEST);
-        }
 
         try {
-            oldInvite.get().setActive(invite.isActive());
-            oldInvite.get().setExpirationDate(invite.getExpirationDate());
-            oldInvite.get().setInviteName(invite.getInviteName());
-            oldInvite.get().setInvitedByUser(chat.getOwner());
-            inviteRepository.save(oldInvite.get());
+            oldInvite.setActive((invite.isActive()));
+            oldInvite.setExpirationDate(invite.getExpirationDate());
+            oldInvite.setInviteName(invite.getInviteName());
+            oldInvite.setInvitedByUser(chat.getOwner());
+            inviteRepository.save(oldInvite);
             return new ResponseEntity<>("Updated the Invite",HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Could not update the Invite.",HttpStatus.BAD_REQUEST);
         }
     }
 }
-
-    
-    /*
-     * (c change (multi) / s set (single) / d delete)
-     * InviteID sd
-     * ChatID s
-     * InvitedByUserID sd
-     * InviteName c
-     * ExpirationDate c
-     * Active c
-     * 
-     * create s
-     * modify c
-     * delete s
-    */

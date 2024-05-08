@@ -16,9 +16,9 @@ public interface InviteRepository extends JpaRepository<Invite, Long> {
     Optional<Invite> findByInviteName(String inviteName);
     Optional<Invite> findByExpirationDate(Date expirationDate);
     Optional<Invite> findByActive(boolean active);
-    Optional<Invite> findByChatChatID(Long chatID);
+    Optional<Invite> findByChatID(Long chatID);
 
-    boolean existsByChatChatID(Long chatID);
+    boolean existsByChatID(Long chatID);
     boolean existsByInviteName(String inviteName);
     boolean existsByInviteID(Long inviteID);
 

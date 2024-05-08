@@ -15,6 +15,7 @@ import ch.jchat.chatapp.misc.Validator;
 import ch.jchat.chatapp.models.User;
 import ch.jchat.chatapp.models.dto.PasswordChangeRequest;
 import ch.jchat.chatapp.repositories.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,14 +24,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1/user")
+@AllArgsConstructor
 public class UserController {
 
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserAuth userAuth;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserAuth userAuth;
 
     @PostMapping("/username")
     public ResponseEntity<String> changUsername(@RequestBody String user){
@@ -105,10 +104,10 @@ public class UserController {
         }
     }
     @PostMapping("/delete")
-    public ResponseEntity<String> deleteUser(@RequestBody PasswordChangeRequest pwDTO){
+    public ResponseEntity<String> deleteUser(@RequestBody String password){
         User currentUser = userAuth.getUser();
-        log.debug("'"+pwDTO.getPassword()+"' - "+currentUser.toString());
-        if (passwordEncoder.matches(pwDTO.getPassword(), currentUser.getPassword())) {
+        log.debug("'"+password+"' - "+currentUser.toString());
+        if (passwordEncoder.matches(password, currentUser.getPassword())) {
             userRepository.delete(currentUser);
             return ResponseEntity.ok("Account Deleted.");
         }

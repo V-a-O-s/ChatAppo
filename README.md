@@ -53,3 +53,10 @@ Body: JSON
 localhost:8080/api/auth/logout
 Auth: Bearer Token
 ```
+#### Verify
+localhost:8080/api/auth/verify
+Auth: Bearer Token
+{
+    "email": "string@c2oaam.ch",
+    "password": "string"
+}
