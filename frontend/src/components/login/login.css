@@ -1,0 +1,137 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 600px;
+    margin-top: 200px;
+    background: #eaeaea;
+    padding-bottom: 30px;
+ }
+
+.header{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    margin-top: 30px;
+}
+
+.text{
+    color: #155e2a;
+    font-size: 48px;
+    font-weight: 700;
+    width: 100%;
+    margin: auto;
+    position: relative;
+}
+
+.underline{
+    width: 61px;
+    height: 6px;
+    background: black;
+    border-radius: 9px;
+}
+
+.inputs{
+    margin-top: 55px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input{
+    display: flex;
+    align-items: center;
+    margin: auto;
+    width: 480px;
+    height: 80px;
+    border-radius: 9px;
+    background: #cccccc;
+}
+
+.input img{
+    margin: 0px 10px 0px 10px;
+    -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.input input{
+    height: 50px;
+    width: 83%;
+    background: transparent;
+    border:none;
+    outline: none;
+    color: #696969;
+    font-size: 19px;
+    
+}
+
+.forgot-password{
+    display: flex;
+    padding-left: 62px;
+    margin-top: 27px;
+    color: #155e2a;
+    font-size: 18px;
+}
+.forgot-password span{
+    cursor: pointer;
+}
+
+.submit-container{
+    display: flex;
+    gap: 30px;
+    margin: 30px auto;
+}
+
+.submit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 220px;
+    height: 59px;
+    font-weight: 700;
+    color: #fff;
+    background: #155e2a;
+    border-radius: 25px;
+    font-size: 19px;
+    cursor: pointer;
+}
+
+.gray{
+    background: #ccc;
+    color: #797979;
+}
+
+.hidden {
+    display: none;
+}
+
+.top{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 62px;
+    width: 100%;
+    gap: 27%;
+}
+
+.back-button {
+    background-color: #ccc;
+    padding: 10px 19px;
+    border-radius: 90px;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    text-decoration: none;
+    font-size: 20px;
+    color: #696969;
+
+}
+.back-button:hover {
+    background-color: #155e2a;
+    color: #fff;
+    cursor: pointer;
+}

@@ -1,11 +1,10 @@
 package ch.jchat.chatapp.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -28,19 +27,22 @@ public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long messageID;
+    private Long messageid;
 
-    @ManyToOne
+    //@ManyToOne
+    //@JoinColumn(name = "chatID", nullable = false)
     @NotNull
-    @JoinColumn(name = "chatID", nullable = false)
-    private Chat chat;
+    @Column(name = "chatID")
+    private Long chatid;
 
-    @ManyToOne
+    //@ManyToOne
+    //@NotNull
+    //@JoinColumn(name = "userID", nullable = false)
     @NotNull
-    @JoinColumn(name = "userID", nullable = false)
-    private User user;
+    @Column(name = "userID")
+    private Long userid;
 
-    @NotBlank(message = "Message text cannot be empty")
+    @NotBlank()
     private String messageText;
     
     @Temporal(TemporalType.TIMESTAMP)

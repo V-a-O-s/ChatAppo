@@ -1,0 +1,25 @@
+:root {
+  --primary: #155e2a;
+  --secundary: #1a1a1a;
+  --light-text: #eaeaea;
+  --primary-dark: #4d4d4d;
+  --primary: rgb(34, 177, 76);
+
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  margin: 0;
+  height: 100vh;
+
+  color-scheme: light dark;
+  color: var(--light-text);
+  background-color: var(--secundary);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  overflow: hidden;
+}

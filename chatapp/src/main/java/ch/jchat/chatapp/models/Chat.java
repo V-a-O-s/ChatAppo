@@ -1,19 +1,18 @@
 package ch.jchat.chatapp.models;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.NoArgsConstructor;
 import java.util.Date;
 
@@ -21,6 +20,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name = "Chats")
 public class Chat {
 
@@ -28,9 +28,10 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatID;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ownerID", nullable = false)
-    private User owner;
+    //@ManyToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "ownerID", nullable = false)
+    @Column(name = "ownerID")
+    private Long owner;
 
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
@@ -38,11 +39,10 @@ public class Chat {
     private Date creationDate;
 
     @NotNull
-    @Column(nullable = false, columnDefinition = "SMALLINT DEFAULT 2")
-    private Short userLimit = 2;
-
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date lastMessage;
+    private int userLimit = 2;
 
+    @NotNull
+    @NotBlank
+    private String chatName;
 }

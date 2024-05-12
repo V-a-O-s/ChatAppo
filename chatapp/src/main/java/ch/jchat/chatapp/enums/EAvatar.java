@@ -7,6 +7,17 @@ public enum EAvatar {
     BLUE,       //free
     BLACK,      //free
     WHITE,      //free
+    PINK
+}
+
+/*
+ public enum EAvatar {
+    RED,        //free
+    GREEN,      //free
+    YELLOW,     //free
+    BLUE,       //free
+    BLACK,      //free
+    WHITE,      //free
 
     PURPLE,     //vip
     ORANGE,     //vip
@@ -23,3 +34,5 @@ public enum EAvatar {
     TROPICAL,   //mvp
     NEON        //mvp
 }
+
+ */
