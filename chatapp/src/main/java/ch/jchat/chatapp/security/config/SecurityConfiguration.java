@@ -1,5 +1,7 @@
 package ch.jchat.chatapp.security.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import ch.jchat.chatapp.enums.EPlatformRoles;
 import ch.jchat.chatapp.exceptions.CustomAccessDeniedHandler;
@@ -35,7 +38,15 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
+        return http.cors(cors -> cors.configurationSource(request -> {
+            CorsConfiguration configuration = new CorsConfiguration();
+            configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Adjust as necessary
+            configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+            configuration.setAllowCredentials(true);
+            return configuration;
+        }))
+        .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth ->
         auth.requestMatchers("/api/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
             .requestMatchers("/api/v*/team/admin/**").hasRole(EPlatformRoles.ADMIN.name())

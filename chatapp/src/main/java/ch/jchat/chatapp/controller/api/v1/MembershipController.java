@@ -2,6 +2,8 @@ package ch.jchat.chatapp.controller.api.v1;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.jchat.chatapp.enums.EChatRoles;
 import ch.jchat.chatapp.misc.UserAuth;
 import ch.jchat.chatapp.models.Chat;
+import ch.jchat.chatapp.models.Invite;
 import ch.jchat.chatapp.models.Membership;
 import ch.jchat.chatapp.models.User;
 import ch.jchat.chatapp.repositories.ChatRepository;
+import ch.jchat.chatapp.repositories.InviteRepository;
 import ch.jchat.chatapp.repositories.MembershipRepository;
 import ch.jchat.chatapp.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -30,14 +34,25 @@ public class MembershipController {
     private final UserRepository userRepository;
     private final ChatRepository chatRepository;
     private final UserAuth userAuth;
+    private final InviteRepository inviteRepository;
 
-    @PostMapping("/join/{chatID}")
-    public ResponseEntity<String> joinChat(@PathVariable Long chatID) {
+    @PostMapping("/join")
+    public ResponseEntity<String> joinChat(@PathVariable String invite) {
         User currentUser = userAuth.getUser();
-        if (membershipRepository.existsByChatIDAndUserID(chatID, currentUser.getUserID())) {
+
+
+        Optional<Invite> invOpt = inviteRepository.findByInviteName(invite);
+        Invite inv;
+        if (invOpt.isPresent()) {
+            inv = invOpt.get();
+        }else{
+            return ResponseEntity.badRequest().body("Invite does not exists");
+        }
+
+        if (membershipRepository.existsByChatIDAndUserID(inv.getChatID(), currentUser.getUserID())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User already a member of the chat.");
         }
-        Chat chat = chatRepository.findById(chatID).orElseThrow(() -> new IllegalArgumentException("Chat does not exist."));
+        Chat chat = chatRepository.findById(inv.getChatID()).orElseThrow(() -> new IllegalArgumentException("Chat does not exist."));
         EChatRoles role = (chat.getOwner().equals(currentUser.getUserID())) ? EChatRoles.CHAT_OWNER : EChatRoles.CHAT_USER;
 
         Membership newMembership = new Membership();
@@ -100,6 +115,17 @@ public class MembershipController {
         membershipRepository.save(targetMembership);
         return ResponseEntity.ok(userRepository.findByUserID(target.getUserID()).orElseThrow().getUsername()+" was Banned.");
     }
+
+    @PostMapping("/get")
+    public ResponseEntity<?> getActiveMemberships() {
+        User currentUser = userAuth.getUser();
+        List<Membership> activeMemberships = membershipRepository.findByUserIDAndBannedFalse(currentUser.getUserID());
+        if (activeMemberships.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(activeMemberships);
+    }
+
     private boolean canChangeRole(Membership changer, EChatRoles targetRole) {
         switch (changer.getUserRole()) {
             case CHAT_OWNER:

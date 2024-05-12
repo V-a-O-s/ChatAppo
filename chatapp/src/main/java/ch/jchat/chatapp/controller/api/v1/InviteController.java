@@ -3,7 +3,6 @@ package ch.jchat.chatapp.controller.api.v1;
 import java.util.Date;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -54,7 +53,7 @@ public class InviteController {
         Invite newInvite = new Invite();
         newInvite.setActive(true);
         newInvite.setChatID(chat.getChatID());
-        newInvite.setExpirationDate(new Date(Long.valueOf("7956915742") ));
+        newInvite.setExpirationDate(new Date(Long.valueOf("253402297199")));
         newInvite.setInviteName(invite.getInviteName());
         newInvite.setInvitedByUser(chat.getOwner());
         inviteRepository.save(newInvite);
@@ -88,5 +87,10 @@ public class InviteController {
         } catch (Exception e) {
             return new ResponseEntity<>("Could not update the Invite.",HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<Boolean> validateInvite(@RequestBody String invite){
+        return ResponseEntity.ok(inviteRepository.findByInviteName(invite).isPresent());
     }
 }

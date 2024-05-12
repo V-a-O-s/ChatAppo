@@ -28,5 +28,9 @@ public class Validator{
         Matcher matcher = USER_PATTERN.matcher(name);
         return matcher.matches();
     }
+
+    public static boolean isValidLimit(int limit){
+        return limit<255;
+    }
     
 }

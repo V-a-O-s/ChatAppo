@@ -1,11 +1,13 @@
 package ch.jchat.chatapp.controller.api.v1;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,9 +19,11 @@ import ch.jchat.chatapp.misc.UserAuth;
 import ch.jchat.chatapp.models.Membership;
 import ch.jchat.chatapp.models.Message;
 import ch.jchat.chatapp.models.User;
+import ch.jchat.chatapp.models.dto.MessageDto;
 import ch.jchat.chatapp.repositories.ChatRepository;
 import ch.jchat.chatapp.repositories.MembershipRepository;
 import ch.jchat.chatapp.repositories.MessageRepository;
+import ch.jchat.chatapp.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +39,7 @@ public class MessageController {
     private final ChatRepository chatRepository;
     private final MembershipRepository membershipRepository;
     private final MessageRepository messageRepository;
+    private final UserRepository userRepository;
 
     @PostMapping("/send")
 public ResponseEntity<?> sendMessage(@RequestBody Message msg){
@@ -54,7 +59,7 @@ public ResponseEntity<?> sendMessage(@RequestBody Message msg){
     return new ResponseEntity<>("Message sent", HttpStatus.OK);
 }
 
-    @PostMapping("/recive/{chatID}")
+    @GetMapping("/get/{chatID}")
     public ResponseEntity<?> getAllMessages(@PathVariable Long chatID){
         User currentUser = userAuth.getUser();
         Membership member = membershipRepository.findByChatIDAndUserID(chatID, currentUser.getUserID()).orElseThrow(() -> {
@@ -64,7 +69,23 @@ public ResponseEntity<?> sendMessage(@RequestBody Message msg){
         if (member.getUserRole()==EChatRoles.CHAT_LOCKED || member.isBanned()) {
             return new ResponseEntity<>("Not autorized to see the Messages in this Chat",HttpStatus.UNAUTHORIZED);
         }
-        return ResponseEntity.ok(messageRepository.findByChatid(chatID));
+
+        List<MessageDto> tempList = new ArrayList<>();
+        for (Message msg : messageRepository.findByChatid(chatID)) {
+            MessageDto foo = new MessageDto();
+            User sender = userRepository.findByUserID(msg.getUserid()).get();
+            foo.setAvatar(sender.getAvatar());
+            foo.setChatId(chatID);
+            foo.setMessageText(msg.getMessageText());
+            foo.setMessageid(msg.getMessageid());
+            foo.setSendingTime(msg.getSendingTime());
+            foo.setUserId(msg.getUserid());
+            foo.setUsername(sender.getUsername());
+            tempList.add(foo);
+            
+            
+        }
+        return ResponseEntity.ok(tempList);
     }
     /*
      * (c change (multi) / s set (single))

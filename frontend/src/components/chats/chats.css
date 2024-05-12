@@ -1,0 +1,118 @@
+.chat-tab {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 5px;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+
+.chat-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; 
+}
+
+.chat-tab:hover {
+  background-color: #333;
+}
+
+.leave-button {
+  background: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.leave-button:hover {
+  background: darkred;
+}
+
+
+.active {
+  background-color: #333; 
+  color: white;
+}
+
+.popup input {
+  margin-bottom: 10px;
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.b-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.b-button:hover{
+  background-color: darkred;
+}
+
+.g-button {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+
+}
+
+.g-button:hover{
+  background: darkgreen;
+  cursor: pointer;
+}
+  
+.hidden {
+  display: none;
+}
+.no-hover:hover{
+  background: black;
+  cursor:default;
+}
+
+.active-switch{
+  background-color: black;
+  color: white;
+  outline: none;
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.active-switch:hover{
+  background-color: #333;
+}
+
+.chats-ul{
+  list-style: none;
+  padding: 5px;
+}
+
+.invite-button{
+  background-color:blue;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: 700;
+}
+
+.invite-button:hover{
+  cursor: pointer;
+  background-color: darkblue;
+}
+.misc-chat-button{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}

@@ -1,7 +1,6 @@
 package ch.jchat.chatapp.repositories;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +20,7 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
     List<Membership> findByChatID(Long chatID);
     List<Membership> findByChatIDAndUserRole(Long chatID, EChatRoles userRole);
     List<Membership> findByChatIDAndJoinDate(Long chatID, LocalDateTime joinDate);
+    List<Membership> findByUserIDAndBannedFalse(Long userID);
 
     boolean existsByChatIDAndUserID(Long chatID, Long userID);
 

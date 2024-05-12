@@ -3,34 +3,21 @@ import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider, }
 from "react-router-dom";
 import "./styles/index.css";
-import App from "./components/App";
-import Public from "./components/public";
-import MainNavigation from "./components/main-nav";
-import Home from "./components/Home";
+import Home from "./components/home/homepage";
+import Login from "./components/login/login";
+import Welcome from "./components/welcome/welcome";
 const router = createBrowserRouter([
   {
-    path: "/app",
-    element: <App />,
-  },
-  {
-    path: "/public",
-    element: <Public />
-  },
-  {
-    path: "/pubthicc",
-    element: <h1>Pipimann</h1>
+    path: "/",
+    element: <Welcome /> //public for all
   },
   {
     path: "/login",
-    element: <h1>login oder so</h1>
+    element: <Login /> //public for all
   },
   {
-    path: "/private",
-    element: <h1>private</h1>
-  },
-  {
-    path: "/",
-    element: <Home />
+    path: "/home",
+    element: <Home /> //private for users
   }
 ]);
   ReactDOM.createRoot(document.getElementById("root"))
