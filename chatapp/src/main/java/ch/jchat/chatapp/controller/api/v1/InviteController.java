@@ -88,9 +88,4 @@ public class InviteController {
             return new ResponseEntity<>("Could not update the Invite.",HttpStatus.BAD_REQUEST);
         }
     }
-
-    @PostMapping("/validate")
-    public ResponseEntity<Boolean> validateInvite(@RequestBody String invite){
-        return ResponseEntity.ok(inviteRepository.findByInviteName(invite).isPresent());
-    }
 }

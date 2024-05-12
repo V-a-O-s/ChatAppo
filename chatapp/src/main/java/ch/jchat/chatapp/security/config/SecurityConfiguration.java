@@ -40,8 +40,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.cors(cors -> cors.configurationSource(request -> {
             CorsConfiguration configuration = new CorsConfiguration();
-            configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Adjust as necessary
-            configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            configuration.addAllowedOriginPattern("*"); // Adjust as necessary
+            configuration.setAllowedMethods(List.of("GET", "POST"));
             configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
             configuration.setAllowCredentials(true);
             return configuration;
