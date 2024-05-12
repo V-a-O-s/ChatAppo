@@ -59,7 +59,8 @@
     user-select: none;
     resize: none;
     font-size: 21px;
-    overflow-y: hidden;
+    overflow-y: scroll;
+    scrollbar-width: none;
 }
 
 

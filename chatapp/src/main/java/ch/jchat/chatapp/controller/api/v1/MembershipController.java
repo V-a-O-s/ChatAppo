@@ -19,15 +19,18 @@ import ch.jchat.chatapp.models.Chat;
 import ch.jchat.chatapp.models.Invite;
 import ch.jchat.chatapp.models.Membership;
 import ch.jchat.chatapp.models.User;
+import ch.jchat.chatapp.models.dto.InviteDto;
 import ch.jchat.chatapp.repositories.ChatRepository;
 import ch.jchat.chatapp.repositories.InviteRepository;
 import ch.jchat.chatapp.repositories.MembershipRepository;
 import ch.jchat.chatapp.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v1/member")
 @AllArgsConstructor
+@Slf4j
 public class MembershipController {
 
     private final MembershipRepository membershipRepository;
@@ -37,15 +40,17 @@ public class MembershipController {
     private final InviteRepository inviteRepository;
 
     @PostMapping("/join")
-    public ResponseEntity<String> joinChat(@PathVariable String invite) {
+    public ResponseEntity<String> joinChat(@RequestBody InviteDto invite) {
         User currentUser = userAuth.getUser();
 
+        log.debug(invite.getInvite());
 
-        Optional<Invite> invOpt = inviteRepository.findByInviteName(invite);
+        Optional<Invite> invOpt = inviteRepository.findByInviteName(invite.getInvite());
         Invite inv;
         if (invOpt.isPresent()) {
             inv = invOpt.get();
         }else{
+            log.debug(invOpt.isEmpty()+"");
             return ResponseEntity.badRequest().body("Invite does not exists");
         }
 

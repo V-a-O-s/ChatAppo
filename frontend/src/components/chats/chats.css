@@ -95,9 +95,16 @@
   background-color: #333;
 }
 
+.chats-list{
+  padding: 5px;
+}
+
 .chats-ul{
   list-style: none;
-  padding: 5px;
+  padding: 0px;
+  height: 65vh;
+  overflow-y:scroll;
+  scrollbar-width: none;
 }
 
 .invite-button{
@@ -115,4 +122,14 @@
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.action-button {
+  padding: 10px;
 }

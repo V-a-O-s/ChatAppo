@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ChatService from '../../services/chats.service';
 import JoinService from '../../services/join.service';
 import './chats.css';
+import InviteService from '../../services/invite.service';
 
 function Chats({ setActiveChat, activeChat }) {
   const [chats, setChats] = useState([]);
@@ -68,6 +69,8 @@ function Chats({ setActiveChat, activeChat }) {
 
   const handleJoinChat = () => {
     JoinService.joinChat(inviteCode);
+    setActiveChat(null);
+    return ChatService.getAllChats();
   };
 
   const handleLeaveChat = (chatId) => {
@@ -86,22 +89,32 @@ function Chats({ setActiveChat, activeChat }) {
     setActiveChat(null)
   };
 
+  const handleInvite = (invite) =>{
+    navigator.clipboard.writeText(invite)
+    .then(() => {
+      console.log('Text copied to clipboard:', text);
+    })
+    .catch((error) => {
+      console.error('Failed to copy text to clipboard:', error);
+    });
+    alert("Invite copied to your clipboard!")
+  }
+
   return (
     <div className="chats-container">
       
       <div className='chats-list'>
-        <ul className="chats-ul">
-          <li className='spec-chat-tab chat-tab' onClick={() => togglePopup('create')}>
+      <div className='spec-chat-tab chat-tab' onClick={() => togglePopup('create')}>
             <div className='create-join chat-init'>
               Create a Chat
             </div>
-          </li>
-          <li className='spec-chat-tab chat-tab' onClick={() => togglePopup('invite')}>
+          </div>
+          <div className='spec-chat-tab chat-tab' onClick={() => togglePopup('invite')}>
             <div className='join-link chat-init' >
               Join a Chat
             </div>
-          </li>
-          <li className={(showPopup)?'chat-tab no-hover':"hidden"}>
+          </div>
+          <div className={(showPopup)?'chat-tab no-hover':"hidden"}>
           {showPopup && (
         <div className="popup-container" >
           <div className="popup">
@@ -120,7 +133,10 @@ function Chats({ setActiveChat, activeChat }) {
                   value={userLimit}
                   onChange={(e) => setUserLimit(e.target.value)}
                 />
-                <button onClick={handleCreateChat}>Create</button>
+                <div className='action-buttons'>
+                  <button className='g-button action-button' onClick={handleCreateChat}>Create</button>
+                  <button className='b-button action-button' onClick={() => setShowPopup(false)}>Exit</button>
+                </div>
               </div>
             ) : (
               <div>
@@ -132,15 +148,16 @@ function Chats({ setActiveChat, activeChat }) {
                   onChange={(e) => setInviteCode(e.target.value)}
                 />
                 <div className='action-buttons'>
-                  <button className='g-button' onClick={handleJoinChat}>Join</button>
-                  <button className='b-button' onClick={() => setShowPopup(false)}>Exit</button>
+                  <button className='g-button action-button' onClick={handleJoinChat}>Join</button>
+                  <button className='b-button action-button' onClick={() => setShowPopup(false)}>Exit</button>
                 </div>
               </div>
             )}
           </div>
         </div>
       )}
-          </li>
+      </div>
+        <ul className="chats-ul">
           {chats.map((chat, index) => (
             <li key={chat.chatId} className={`chat-tab ${chat.chatId === activeChat ? 'active' : ''}`} onClick={() => setActiveChat(chat.chatId)}>
               <div className='chat-name' id={chat.owner+"-"+chat.chatId}>{chat.chatName}</div>

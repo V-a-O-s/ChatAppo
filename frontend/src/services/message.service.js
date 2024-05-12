@@ -1,13 +1,13 @@
 import axios from 'axios';
 import authHeader from '../api/authHeader';
-import { API_URL } from '../config';
+import CONFIG from '../config';
 
 const getMessages = (chatId) => {
     if (chatId==null) {
         return;
     }
     const headersConfig = authHeader();
-    return axios.get(`${API_URL}/v1/message/get/${chatId}`, { headers: headersConfig });
+    return axios.get(`${CONFIG.API_URL}/v1/message/get/${chatId}`, { headers: headersConfig });
 };
 
 const sendMessage = (chatId, message) => {
@@ -17,7 +17,7 @@ const sendMessage = (chatId, message) => {
         messageText: message
     };
     console.log(data);
-    return axios.post(`${API_URL}/v1/message/send`, data, { headers: headersConfig });
+    return axios.post(`${CONFIG.API_URL}/v1/message/send`, data, { headers: headersConfig });
 };
 
 const MessagesService = {

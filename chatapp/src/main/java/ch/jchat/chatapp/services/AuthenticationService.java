@@ -68,7 +68,12 @@ public class AuthenticationService{
 
         User user = userRepository.findByEmail(request.getEmail())
             .orElseThrow(() -> new EmailNotFoundException("User not found with email: " + request.getEmail()));
-    
+        
+        if (!user.isBanned() && !user.isVerified()) {
+            user.setVerified(true);   
+        }
+        
+
         String token = jwtService.generateToken(user);
         saveUserToken(user, token);
         return new AuthenticationResponse(token);

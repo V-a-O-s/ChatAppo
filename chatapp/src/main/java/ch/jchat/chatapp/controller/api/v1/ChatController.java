@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import ch.jchat.chatapp.models.Chat;
 import ch.jchat.chatapp.models.Invite;
 import ch.jchat.chatapp.models.Membership;
 import ch.jchat.chatapp.models.User;
+import ch.jchat.chatapp.models.dto.InviteDto;
 import ch.jchat.chatapp.models.dto.MembershipDto;
 import ch.jchat.chatapp.repositories.ChatRepository;
 import ch.jchat.chatapp.repositories.InviteRepository;
@@ -69,7 +71,9 @@ public class ChatController {
 
 
         log.debug("Created Chat: "+newChat.toString());
-        membershipController.joinChat(invName);
+        InviteDto idto = new InviteDto();
+        idto.setInvite(invName);
+        membershipController.joinChat(idto);
         return ResponseEntity.ok("Chat "+chat.getChatName()+", was created.");
     }
     @PostMapping("/limit")
@@ -107,10 +111,11 @@ public class ChatController {
         }
         return new ResponseEntity<>("You are not Authorized to delete this Chat!",HttpStatus.UNAUTHORIZED);
     }
-    @PostMapping("/get")
+    @GetMapping("/get")
     public ResponseEntity<?> getChat() {
         User currentUser = userAuth.getUser();
 
+        log.debug("Error with getting chats");
         List<Membership> memberships = membershipRepository.findByUserIDAndBannedFalse(currentUser.getUserID());
 
         if (memberships.isEmpty()) {
