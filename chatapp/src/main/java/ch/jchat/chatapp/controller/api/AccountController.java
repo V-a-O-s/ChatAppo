@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,16 +35,19 @@ public class AccountController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
+    @Transactional
     public ResponseEntity<AuthenticationResponse> createUser(@RequestBody AuthDto user) {
         return ResponseEntity.ok(authenticationService.register(user));
     }
 
     @PostMapping("/login")
+    @Transactional
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthDto user) {
         return ResponseEntity.ok(authenticationService.authenticate(user));
     }
 
     @PostMapping("/verify")
+    @Transactional
     public ResponseEntity<String> verifyUser(@RequestBody VerifyDto authUser){
         //User currentUser = userAuth.getUser();
         Optional<User> user = userRepository.findByEmail(authUser.getEmail().replaceAll("\"", ""));
@@ -62,6 +66,7 @@ public class AccountController {
 
     /*
     @PostMapping("/upgrade")
+    @Transactional
     public ResponseEntity<?> upgradeAccount(@RequestBody List<String> upgrade){
         try {
             User usr = userRepository.findByUsername(upgrade.get(1)).get();
@@ -75,6 +80,7 @@ public class AccountController {
     //*/
 
     @PostMapping("/s/ban")
+    @Transactional
     public ResponseEntity<String> bannUser(@RequestBody AuthDto user){
         User admin = userAuth.getUser();
         if (userRepository.existsById(user.getUserID()) && admin.getRole()==EPlatformRoles.ADMIN) {

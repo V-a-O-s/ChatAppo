@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,7 @@ public class InviteController {
     private final UserAuth userAuth;
 
     @PostMapping("/create")
+    @Transactional
     public ResponseEntity<String> createInvite(@RequestBody Invite invite){
         User currentUser = userAuth.getUser();
         Chat chat = chatRepository.findByChatID(invite.getChatID()).orElseThrow();
@@ -61,6 +63,7 @@ public class InviteController {
         return ResponseEntity.ok("Inivte: "+invite.getInviteName()+", was created.");
     }
     @PostMapping("/update")
+    @Transactional
     public ResponseEntity<String> updateInvite(@RequestBody Invite invite){
         User currentUser = userAuth.getUser();
         Optional<Invite> oi = inviteRepository.findByChatID(invite.getChatID());

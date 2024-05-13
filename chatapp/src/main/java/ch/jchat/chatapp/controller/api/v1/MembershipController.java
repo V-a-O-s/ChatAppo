@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +41,7 @@ public class MembershipController {
     private final InviteRepository inviteRepository;
 
     @PostMapping("/join")
+    @Transactional
     public ResponseEntity<String> joinChat(@RequestBody InviteDto invite) {
         User currentUser = userAuth.getUser();
 
@@ -70,6 +72,7 @@ public class MembershipController {
     }
 
     @PostMapping("/leave/{chatId}")
+    @Transactional
     public ResponseEntity<String> leaveChat(@PathVariable Long chatId) {
         User currentUser = userAuth.getUser();
         Membership membership = membershipRepository.findByChatIDAndUserID(chatId, currentUser.getUserID())
@@ -78,6 +81,7 @@ public class MembershipController {
         return ResponseEntity.ok("You have successfully left the chat.");
     }
     @PostMapping("/setRole")
+    @Transactional
     public ResponseEntity<String> changeUserRole(@RequestBody Membership member) {
         User currentUser = userAuth.getUser();
         Chat chat = chatRepository.findByChatID(member.getChatID()).orElseThrow();
@@ -94,6 +98,7 @@ public class MembershipController {
         return ResponseEntity.ok("The role from the User: '"+target.getUsername()+"' updated successfully.");
     }
     @PostMapping("/ban")
+    @Transactional
     public ResponseEntity<String> banUser(@RequestBody Membership target) {
         User currentUser = userAuth.getUser();
         if (!canChangeRole(membershipRepository.findByChatIDAndUserID(target.getChatID(), currentUser.getUserID()).orElseThrow(),

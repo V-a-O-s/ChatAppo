@@ -40,7 +40,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.cors(cors -> cors.configurationSource(request -> {
             CorsConfiguration configuration = new CorsConfiguration();
-            configuration.addAllowedOriginPattern("*"); // Adjust as necessary
+            configuration.addAllowedOriginPattern("*");
             configuration.setAllowedMethods(List.of("GET", "POST"));
             configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
             configuration.setAllowCredentials(true);
@@ -51,7 +51,7 @@ public class SecurityConfiguration {
         auth.requestMatchers("/api/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
             .requestMatchers("/api/v*/team/admin/**").hasRole(EPlatformRoles.ADMIN.name())
             .requestMatchers("/api/v*/team/support/**","/api/auth/s/**").hasAnyRole(EPlatformRoles.ADMIN.name(), EPlatformRoles.SUPPORTER.name())
-            .requestMatchers("/api/v1/user/**").hasAnyRole(EPlatformRoles.ADMIN.name(), EPlatformRoles.SUPPORTER.name(), EPlatformRoles.MVP.name(), EPlatformRoles.VIP.name(), EPlatformRoles.USER.name())
+            .requestMatchers("/api/v*/**").hasAnyRole(EPlatformRoles.ADMIN.name(), EPlatformRoles.SUPPORTER.name(), EPlatformRoles.MVP.name(), EPlatformRoles.VIP.name(), EPlatformRoles.USER.name())
             .anyRequest()
             .authenticated()
         ).userDetailsService(userDetailService)

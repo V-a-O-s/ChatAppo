@@ -1,22 +1,55 @@
 # Aktuelle Version 1
 
 # ChatApp
-Eine Java Chat-Applikation mit Springboot, React und MySql für das Modul 322. 
+Eine Java-Chat-Anwendung, die **Springboot**, **React** und **MySql** verwendet und für das Modul 322 entwickelt wurde.
 
-## Features
-Gruppenchats
-Privatnachrichten
-Umfangreiche REST-Api
+## Funktionen
+- Unterstützt Gruppenchats
+- Privatnachrichten
+- Eine umfangreiche REST-API
 
-Automatisches aufsetzten der Datenbank mit Docker
+## Datenbankeinrichtung
+Automatische Einrichtung der Datenbank mit **Docker**.
 
-# Setup-Anleitung
+## Installationsanleitung
 
-### Schritt 1: Docker-Container erstellen
-Navigieren Sie im Projektverzeichnis zum Unterordner `chatapp`. Starten Sie dort die Docker-Container, indem Sie den Befehl `docker-compose up -d` ausführen.
+### Schritt 1: Erstellen des Docker-Containers
+Navigiere im Projektverzeichnis zum Unterordner `chatapp`. Starte die Docker-Container, indem du den Befehl `docker-compose up -d` ausführst.
 
 ### Schritt 2: Applikation starten
-Nach erfolgreicher Einrichtung, kann die Applikation in der bevorzugten Entwicklungsumgebung (IDE) gestartet werden. Der Startvorgang kann je nach verwendeter IDE unterschiedlich sein.
+Nachdem die Einrichtung erfolgreich abgeschlossen ist, kann die Anwendung in der bevorzugten Entwicklungsumgebung (IDE) gestartet werden. Der Startvorgang kann je nach verwendeter IDE variieren.
+
+# User Stories
+
+## MUS 1: Gruppen
+**Als** Benutzer, der sich gerne in Gruppen vernetzt,  
+**möchte ich** in Gruppen chatten und diese erstellen können,  
+**damit** ich mich mit meiner Freundesgruppe im selben Chatraum unterhalten kann.
+
+**Akzeptanzkriterien:**
+- Die User können Gruppen erstellen.
+- Es können mehrere Benutzer den Gruppen beitreten und darin schreiben.
+
+## MUS 2: Sicherheit
+**Wir als** Benutzer mit Sicherheitsbedenken,  
+**wünschen uns,** dass die Nachrichten verschlüsselt werden,  
+**sodass** niemand diese abfangen, verändern oder lesen kann und der Empfänger diese auch im "Originalzustand" zugestellt bekommt.
+
+**Akzeptanzkriterien:**
+- Die Nachricht darf während dem Transport nicht manipulierbar sein.
+- Sie muss anonym übermittelt werden.
+
+## MUS 3: Nachrichten senden und empfangen
+**Als** Benutzer,  
+**möchte ich** Nachrichten senden und empfangen können,  
+**um** mit anderen Mitgliedern der Chat-App kommunizieren zu können.
+
+**Akzeptanzkriterien:**
+- Benutzer können Textnachrichten in einem Chatraum senden.
+- Benutzer erhalten Nachrichten in Echtzeit von anderen Teilnehmern im selben Chatraum.
+- Die Chat-Oberfläche aktualisiert sich automatisch, um gesendete und empfangene Nachrichten ohne Benutzerinteraktion anzuzeigen.
+- Benutzer können den Verlauf der Konversation im Chatraum einsehen, auch nachdem sie die App verlassen und wieder betreten haben.
+
 
 # Sicherheitskonzept der ChatApp
 
@@ -36,7 +69,7 @@ Die `SecurityConfiguration` der ChatApp stellt sicher, dass die Anwendung versch
 - **Offene Endpunkte**: `/api/auth/**`, `/swagger-ui/**`, `/v3/api-docs/**` sind ohne Authentifizierung zugänglich.
 - **Admin-Zugang**: Nur Benutzer mit der Rolle ADMIN haben Zugriff auf `/api/v*/team/admin/**`.
 - **Support-Zugang**: Zugang für Benutzer mit den Rollen ADMIN oder SUPPORTER zu bestimmten Support-Endpunkten.
-- **Benutzerzugang**: Verschiedene Benutzerrollen (ADMIN, SUPPORTER, MVP, VIP, USER) haben Zugriff auf `/api/v1/user/**`.
+- **Benutzerzugang**: Verschiedene Benutzerrollen (ADMIN, SUPPORTER, USER) haben Zugriff auf `/api/v1/user/**`.
 - **Standardzugang**: Alle anderen Anfragen erfordern eine Authentifizierung.
 
 ## Sitzungsmanagement
@@ -332,3 +365,92 @@ Die `SecurityConfiguration` der ChatApp stellt sicher, dass die Anwendung versch
     "active": "boolean"
   }
   ```
+
+# Frontend Dokumentation
+
+## Überblick
+JChat ist eine umfangreiche Chat-Applikation entwickelt mit modernen Technologien wie React, Axios und Backend-Services, die eine Echtzeit-Kommunikation ermöglichen. Die App bietet Funktionen für das Registrieren, Anmelden, Erstellen und Beitreten von Chats sowie das Austauschen von Nachrichten.
+
+## Technischer Stack
+- **Framework**: React
+- **State Management**: React Router für Navigation
+- **HTTP Client**: Axios für API-Anfragen
+- **Styling**: CSS
+
+## Installation
+
+### Voraussetzungen
+- Node.js installiert
+- NPM oder Yarn als Paketmanager
+
+### Installationsanleitung
+```
+Klonen Sie das Repository auf Ihren lokalen Rechner.
+Navigieren Sie zum Projektverzeichnis und installieren Sie die Abhängigkeiten:
+npm install
+Starten Sie den Entwicklungsserver:
+npm run dev
+```
+
+## Dateistruktur
+
+- **index.html**: HTML-Vorlage mit Wurzelelement für React.
+- **main.jsx**: Einstiegspunkt für die React-Anwendung, initialisiert den Router und rendert den `RouterProvider`.
+- **styles/index.css**: Basis-CSS-Datei für globale Stile.
+
+## Komponenten
+
+### Home
+- **Pfad**: `./components/home/homepage`
+- Zeigt die Hauptchat-Oberfläche für eingeloggte Benutzer.
+
+### Login
+- **Pfad**: `./components/login/login`
+- Verwaltet die Authentifizierung der Benutzer.
+
+### Welcome
+- **Pfad**: `./components/welcome/welcome`
+- Öffentliche Startseite für alle Benutzer.
+
+## Routing
+
+Implementiert mit React Router; definiert in `main.jsx`:
+- `/`: Welcome-Seite.
+- `/login`: Login-Seite.
+- `/home`: Startseite (geschützter Bereich für eingeloggte Benutzer).
+
+## Services
+
+### AuthService
+Verwaltet Authentifizierungsoperationen wie Login, Logout und Registrierung:
+- **login(email, password)**: Loggt den Benutzer ein und speichert das Token im lokalen Speicher.
+- **logout()**: Entfernt Benutzerdetails aus dem lokalen Speicher.
+- **getCurrentUser()**: Ruft die aktuellen Benutzerdetails aus dem lokalen Speicher ab.
+- **isLoggedIn()**: Überprüft, ob der Benutzer durch Verifizierung des Tokens eingeloggt ist.
+
+### MessagesService
+Verwaltet die Interaktionen bezüglich der Nachrichten im Chat:
+- **getMessages(chatId)**: Ruft alle Nachrichten eines spezifischen Chats ab.
+- **sendMessage(chatId, message)**: Sendet eine Nachricht im spezifischen Chat.
+
+## Sicherheit
+- Alle sensiblen Operationen benötigen Authentifizierung.
+- Passwörter werden im Backend vor der Speicherung gehasht.
+
+
+## Deployment
+
+- Die Anwendung wird für die Produktionsumgebung mit dem Befehl vorbereitet:
+```
+npm run dev
+```
+- Stellen Sie sicher, dass alle Umgebungsvariablen korrekt für die Produktion eingestellt sind, einschließlich API-URLs und anderer Drittanbieterintegrationen.
+
+
+
+## Quellen
+
+| Quelle | URL |
+|--------|-----|
+| LearnWithIfte | [https://www.youtube.com/@LearnWithIfte](https://www.youtube.com/@LearnWithIfte) |
+| ChatGPT | [https://chatgpt.com/](https://chatgpt.com/) |
