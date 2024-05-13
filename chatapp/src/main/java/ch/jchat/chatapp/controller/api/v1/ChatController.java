@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +49,7 @@ public class ChatController {
     private final InviteRepository inviteRepository;
 
     @PostMapping("/create")
+    @Transactional
     public ResponseEntity<String> createChat(@RequestBody Chat chat){
         User currentUser = userAuth.getUser();
         Chat newChat = new Chat();
@@ -60,6 +62,10 @@ public class ChatController {
         String invName = RandomGenerator.generateRandomString(10);
         while (inviteRepository.existsByInviteName(invName)) {
             invName = RandomGenerator.generateRandomString(10);
+        }
+
+        if (newChat.getChatName().equals("m223-demo")) {
+            invName="m223";
         }
 
         Invite inv = new Invite();
@@ -77,6 +83,7 @@ public class ChatController {
         return ResponseEntity.ok("Chat "+chat.getChatName()+", was created.");
     }
     @PostMapping("/limit")
+    @Transactional
     public ResponseEntity<String> changeUserLimit(@RequestBody Chat chat){
         User currentUser = userAuth.getUser();
         Chat target = chatRepository.findByChatID(chat.getChatID()).orElseThrow();
@@ -89,6 +96,7 @@ public class ChatController {
         return ResponseEntity.badRequest().body("Not Authorized to change the Userlimit");
     }
     @PostMapping("/name")
+    @Transactional
     public ResponseEntity<String> changeChatName(@RequestBody Chat chat){
         User currentUser = userAuth.getUser();
         Chat target = chatRepository.findByChatID(chat.getChatID()).orElseThrow();
@@ -101,8 +109,10 @@ public class ChatController {
         return ResponseEntity.badRequest().body("Not Authorized to change the Chatname");
     }
     @PostMapping("/delete")
+    @Transactional
     public ResponseEntity<String> deleteChat(@RequestBody Chat chat){
         User currentUser = userAuth.getUser();
+
         if (currentUser.getUserID()==chat.getOwner()
         && passwordEncoder.matches(userRepository.findByUserID(chat.getOwner()).get().getPassword(), 
                                     userRepository.findByUserID(currentUser.getUserID()).get().getPassword())) {

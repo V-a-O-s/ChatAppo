@@ -1,6 +1,5 @@
 package ch.jchat.chatapp.models.dto;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import ch.jchat.chatapp.enums.EAvatar;

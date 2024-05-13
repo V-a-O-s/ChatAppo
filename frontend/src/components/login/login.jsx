@@ -70,8 +70,8 @@ export const LoginRegister = () => {
             </div>
             <div className={action === "Register" ? "hidden" : "forgot-password"}><span>Lost Password?</span></div>
             <div className='submit-container'>
-                <div className={action === "Login" ? "submit gray" : "submit"} onClick={() => { handleSubmit("Register") }}>Register</div>
-                <div className={action === "Register" ? "submit gray" : "submit"} onClick={() => { handleSubmit("Login") }}>Login</div>
+                <button className={action === "Login" ? "submit gray" : "submit"} onClick={() => { handleSubmit("Register") }}>Register</button>
+                <button className={action === "Register" ? "submit gray" : "submit"} onClick={() => { handleSubmit("Login") }}>Login</button>
             </div>
         </div>
     );

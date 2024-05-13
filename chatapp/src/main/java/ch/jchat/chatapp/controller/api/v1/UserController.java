@@ -14,6 +14,7 @@ import ch.jchat.chatapp.misc.Validator;
 import ch.jchat.chatapp.models.User;
 import ch.jchat.chatapp.models.dto.PasswordChangeRequest;
 import ch.jchat.chatapp.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +32,7 @@ public class UserController {
     private final UserAuth userAuth;
 
     @PostMapping("/username")
+    @Transactional
     public ResponseEntity<String> changUsername(@RequestBody String user){
         User currentUser = userAuth.getUser();
         log.debug("'"+user+"' - "+ Validator.isName(user) +" - "+ userRepository.findByUsername(user).isEmpty());
@@ -43,6 +45,7 @@ public class UserController {
         
     }
     @PostMapping("/password")
+    @Transactional
     public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequest pwDTO){
         User currentUser = userAuth.getUser();
         log.debug("'"+pwDTO.getPassword()+"' - "+ pwDTO.getNewPassword());
@@ -54,6 +57,7 @@ public class UserController {
         return ResponseEntity.badRequest().body("Something went wrong");
     }
     @PostMapping("/email")
+    @Transactional
     public ResponseEntity<String> changeEmail(@RequestBody String email){
         User currentUser = userAuth.getUser(); //Made By Valentin Ostertag
         email = email.replaceAll("\"", "");
@@ -66,6 +70,7 @@ public class UserController {
         return ResponseEntity.badRequest().body("Email change not possible");
     }
     @PostMapping("/backupemail")
+    @Transactional
     public ResponseEntity<String> changeBackupEmail(@RequestBody String email){
         User currentUser = userAuth.getUser();
         email = email.replaceAll("\"", "");
@@ -78,6 +83,7 @@ public class UserController {
         return ResponseEntity.badRequest().body("Backup-Email change not possible");
     }
     @PostMapping("/phone")
+    @Transactional
     public ResponseEntity<String> changePhone(@RequestBody String phone){
         User currentUser = userAuth.getUser();
         phone = phone.replaceAll("\\s", "");
@@ -90,6 +96,7 @@ public class UserController {
         return ResponseEntity.badRequest().body("Phone change not possible");
     }
     @PostMapping("/avatar")
+    @Transactional
     public ResponseEntity<String> changeAvatar(@RequestBody String avatar){
         User currentUser = userAuth.getUser();
         avatar = avatar.replaceAll("\"", "");
@@ -103,6 +110,7 @@ public class UserController {
         }
     }
     @PostMapping("/delete")
+    @Transactional
     public ResponseEntity<String> deleteUser(@RequestBody String password){
         User currentUser = userAuth.getUser();
         log.debug("'"+password+"' - "+currentUser.toString());
